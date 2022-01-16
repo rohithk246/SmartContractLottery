@@ -4,6 +4,7 @@ compiler:
   solc:
     remappings:
       - '@chainlink=smartcontractkit/chainlink-brownie-contracts@0.3.0'
+dotenv: .env
 networks:
   default: development
   development:

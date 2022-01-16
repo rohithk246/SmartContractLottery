@@ -23,6 +23,8 @@ contract Lottery is VRFConsumerBase {
     uint256 public linkFee;
     bytes32 public keyhash;
 
+    event RequestedRandomness(bytes32 requestId);
+
     constructor(
         uint256 _maxPlayers, 
         uint256 _usdEntryFee, 
@@ -32,6 +34,9 @@ contract Lottery is VRFConsumerBase {
         uint256 _linkFee, 
         bytes32 _keyhash
     ) public VRFConsumerBase(_vrfCoordinator, _link) {
+        require(_maxPlayers > 1, "Maximum players cannot be less than 2!");
+        require(_usdEntryFee > 1, "Entry fee must be greater than 1 USD!");
+        
         usdEntryFee = convertToCorrectDecimals(_usdEntryFee, 0);
         maxPlayers = _maxPlayers;
         lotteryState = LotteryState.OPEN;
@@ -43,7 +48,7 @@ contract Lottery is VRFConsumerBase {
     function enterLottery() public payable returns(bool) {
         require(lotteryState == LotteryState.OPEN, "Lottery is currently closed!");
         require(convertToCorrectDecimals(msg.value, 18) >= getEntranceFee(), 
-                string(abi.encodePacked("Not enough ETH, Entrance fee should be greater than or equal to ", getEntranceFee()))
+            "Not enough ETH!"
         );
         
         players.push(payable(msg.sender));
@@ -68,8 +73,7 @@ contract Lottery is VRFConsumerBase {
     function endLottery() private {
         lotteryState = LotteryState.CALCULATING_WINNER;
         bytes32 requestId = requestRandomness(keyhash, linkFee);
-
-        startLottery();
+        emit RequestedRandomness(requestId);
     }
 
     function fulfillRandomness(bytes32 _requestId, uint256 _randomness) internal override {
@@ -84,9 +88,11 @@ contract Lottery is VRFConsumerBase {
         winner.call{value: address(this).balance}("");
 
         // Reset
-        players = new address payable[](0);
         lotteryState = LotteryState.CLOSED;
+        players = new address payable[](0);
         randomness = _randomness;
+
+        startLottery();
     }
 
     function convertToCorrectDecimals(uint256 num, uint256 currentDecimals) pure public returns(uint256) {
@@ -104,7 +110,11 @@ contract Lottery is VRFConsumerBase {
         } else if (lotteryState == LotteryState.CLOSED) {
             return "CLOSE";
         } else {
-            return "CALCULATING WINNER";
+            return "CALCULATING_WINNER";
         }
+    }
+
+    function totalPlayersJoined() view public returns(uint256) {
+        return players.length;
     }
 }
