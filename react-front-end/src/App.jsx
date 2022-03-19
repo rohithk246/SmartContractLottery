@@ -4,6 +4,8 @@ import { Contract, ethers, utils } from 'ethers';
 import { Container } from '@mui/material';
 import Lottery from "./abis/Lottery.json";
 import Navbar from './components/NavBar';
+import LotteryContent from './Lottery';
+import { parseUnits } from 'ethers/lib/utils';
 
 class App extends Component {
   state = {
@@ -20,35 +22,43 @@ class App extends Component {
     const accounts = await provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const isConnected = window.ethereum.isConnected();
-    let lotteryContract = null;
 
+    this.setState({ provider, accounts, signer, isConnected });
+    
     if(isConnected && signer) {
-      lotteryContract = this.loadLottery();
+      await this.loadLottery();
     }
-
-    this.setState({ provider, accounts, signer, isConnected, lotteryContract });
     console.log('state', this.state);
   }
   
   loadLottery = async () => {
-    const lotteryAddress = '0x38E34b2aB00E879ED0F87C7360fa0994A6fB2bdc';
+    const lotteryAddress = '0x98B8DC0D48763962E2dcB463C1817Dc952C6204A';
     const lotteryContract = new Contract(lotteryAddress, new utils.Interface(Lottery.abi), this.state.signer);
-    const lotteryBalance = await this.state.provider.getBalance(lotteryAddress);
 
-    console.log('lottery balance: ', lotteryBalance.toString());
-    console.log('lottety state: ', await lotteryContract.getLotteryState());
-    console.log('lottety entranceFee in wei: ', (await lotteryContract.getEntranceFee()).toString());
-    // console.log('Enter lottery: ', await lotteryContract.enterLottery({value: 5000000000000000}))
-
-    return lotteryContract;
+    this.setState({ lotteryContract });
   };
+  
+  enterLottery = async () => {
+    let entryFee = await this.state.lotteryContract.getEntranceFee();
+    entryFee = parseUnits("1", "gwei").add(entryFee);
+    const tx = await this.state.lotteryContract.enterLottery({value: entryFee})
+    const reciept = await tx.wait();
+    console.log(reciept);
+    console.log("Entered Lottery");
+  }
+
+  getBalance = async (address) => {
+    const balance = await this.state.provider.getBalance(address);
+
+    return balance.toString();
+  }
   
   render() {
     return (
       <div>
         <Navbar accounts={this.state.accounts} onConnect={this.loadMetaMask}/>
-        <Container maxWidth="sm" sx={{ pt: 5 }}>
-        
+        <Container maxWidth="md" sx={{ pt: 5 }}>
+          <LotteryContent lotteryContract={this.state.lotteryContract} enterLottery={this.enterLottery} getBalance={this.getBalance}/>
         </Container>
       </div>
     );

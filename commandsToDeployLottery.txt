@@ -8,8 +8,7 @@ linkToken = LinkToken.deploy({'from': account})
 
 mockV3Aggregator = MockV3Aggregator.deploy(8,200000000000, {"from": account})
 
-vrfCoordinatorMock = VRFCoordinatorMock.deploy(mockV3Aggregator.address, {'from': a
-ccount})
+vrfCoordinatorMock = VRFCoordinatorMock.deploy(mockV3Aggregator.address, {'from': account})
 
 lottery = Lottery.deploy(
         10, 
@@ -23,3 +22,4 @@ lottery = Lottery.deploy(
         publish_source = False)
 
 
+Might need to fund with link token
