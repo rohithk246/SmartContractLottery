@@ -4,8 +4,9 @@ import { Contract, ethers, utils } from 'ethers';
 import { Container } from '@mui/material';
 import Lottery from "./abis/Lottery.json";
 import Navbar from './components/NavBar';
-import LotteryContent from './Lottery';
+import LotteryContent from './components/Lottery';
 import { parseUnits } from 'ethers/lib/utils';
+import StarsCanvas from './components/StarsCanvas';
 
 class App extends Component {
   state = {
@@ -55,12 +56,15 @@ class App extends Component {
   
   render() {
     return (
+      this.state.lotteryContract ?
       <div>
         <Navbar accounts={this.state.accounts} onConnect={this.loadMetaMask}/>
         <Container maxWidth="md" sx={{ pt: 5 }}>
           <LotteryContent lotteryContract={this.state.lotteryContract} enterLottery={this.enterLottery} getBalance={this.getBalance}/>
         </Container>
       </div>
+      :
+      <StarsCanvas onConnect={this.loadMetaMask}/>
     );
   }
 }
