@@ -1,0 +1,9 @@
+.navBar {
+    position: sticky !important;
+    top: 1rem;
+    justify-content: center;
+    max-width: fit-content;
+    border-radius: 2rem;
+    z-index: 1;
+    background-color: rgba(46, 179, 219, 0.9) !important;
+}

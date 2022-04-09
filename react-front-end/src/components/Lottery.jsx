@@ -49,7 +49,7 @@ class LotteryContent extends Component {
         { 
           this.props.lotteryContract ?
           <div>
-            <span>Lottery Balance: {this.state.lotteryBalance}</span>
+            <span>ETH in lottery pot: {this.state.lotteryBalance}</span>
             <Button variant="contained" size='small' style={{backgroundColor: '#2196f3'}} onClick={this.getLotteryBalance} sx={{ ml: 3 }}>
               Refresh Balance <RefreshIcon/> 
             </Button>
@@ -85,7 +85,7 @@ class LotteryContent extends Component {
             </Button>
             <br/><br/>
 
-            <Button variant="outlined" size='small' color="primary" onClick={this.props.enterLottery}>Enter Lottery</Button>
+            <Button variant="outlined" size='small' color="primary" onClick={this.props.enterLottery} sx={{ my: 3 }}>Enter Lottery</Button>
           </div>
           : <h2>Lottery is not connected :(</h2>
         }

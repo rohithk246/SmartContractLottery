@@ -1,22 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useTransition, animated } from "react-spring";
+import React, { useEffect, useRef } from "react";
 
 const StarsCanvas = ({onConnect}) => {
   const canvasRef = useRef(null);
-  const [isMounted, setIsMounted] = useState(false);
-  const transition = useTransition(isMounted, {
-    from: { x: -100, y: window.innerHeight + 100, opacity: 0 },
-    enter: { x: 0, y: 0, opacity: 1 }, 
-    // leave: { x: window.innerWidth + 100, y: window.innerHeight + 100, opacity: 0 }
-  });
 
   useEffect(() => {
-    setIsMounted(true);
     const canvas = canvasRef.current;
 
     if(canvas) {
       canvas.width = window.innerWidth;
-      console.log(canvas.width)
       canvas.height = window.innerHeight;
   
       const context = canvas.getContext("2d");
@@ -77,7 +68,6 @@ const StarsCanvas = ({onConnect}) => {
       canvas.addEventListener("click", (event) => {
         if(mouseInButton()) {
           onConnect();
-          setIsMounted(false);
         }
       });
   
@@ -193,12 +183,7 @@ const StarsCanvas = ({onConnect}) => {
   }, );
 
   return (
-    <div>
-      {transition((styles, item) => {
-        console.log('yes')
-        return <animated.canvas ref={canvasRef} style={styles} />
-      })}
-    </div>
+    <canvas ref={canvasRef}/>
   )
 };
 

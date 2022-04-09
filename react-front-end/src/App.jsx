@@ -2,6 +2,7 @@ import './App.css';
 import React, { Component } from 'react';
 import { Contract, ethers, utils } from 'ethers';
 import { Container } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Lottery from "./abis/Lottery.json";
 import Navbar from './components/NavBar';
 import LotteryContent from './components/Lottery';
@@ -33,7 +34,7 @@ class App extends Component {
   }
   
   loadLottery = async () => {
-    const lotteryAddress = '0x98B8DC0D48763962E2dcB463C1817Dc952C6204A';
+    const lotteryAddress = '0xd470b08280dAb2713BD918A66E26ce3E9fdC406D';
     const lotteryContract = new Contract(lotteryAddress, new utils.Interface(Lottery.abi), this.state.signer);
 
     this.setState({ lotteryContract });
@@ -54,17 +55,28 @@ class App extends Component {
     return balance.toString();
   }
   
-  render() {
+  render() {    
+    const theme = createTheme({
+      palette: {
+        mode: 'light',
+      },
+    });
+
     return (
       this.state.lotteryContract ?
-      <div>
-        <Navbar accounts={this.state.accounts} onConnect={this.loadMetaMask}/>
-        <Container maxWidth="md" sx={{ pt: 5 }}>
-          <LotteryContent lotteryContract={this.state.lotteryContract} enterLottery={this.enterLottery} getBalance={this.getBalance}/>
-        </Container>
-      </div>
+      <ThemeProvider theme={theme}>
+        <div className='app'>
+          <Navbar accounts={this.state.accounts} onConnect={this.loadMetaMask}/>
+          <iframe title='lotteryAnimation' src='https://my.spline.design/fishexplorerisland-17309cd4fac67d83ea48de938c2120ad/'></iframe>
+          <Container maxWidth="md" sx={{ pt: 5 }}>
+            <LotteryContent lotteryContract={this.state.lotteryContract} enterLottery={this.enterLottery} getBalance={this.getBalance}/>
+          </Container>
+        </div>
+      </ThemeProvider>
       :
-      <StarsCanvas onConnect={this.loadMetaMask}/>
+      <div  className='canvasWrapper'>
+        <StarsCanvas onConnect={this.loadMetaMask}/>
+      </div>
     );
   }
 }
