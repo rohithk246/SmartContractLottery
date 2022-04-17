@@ -67,7 +67,7 @@ class App extends Component {
       <ThemeProvider theme={theme}>
         <div className='app'>
           <Navbar accounts={this.state.accounts} onConnect={this.loadMetaMask}/>
-          <iframe title='lotteryAnimation' src='https://my.spline.design/fishexplorerisland-17309cd4fac67d83ea48de938c2120ad/'></iframe>
+          <iframe title='lotterySeaAnimation' src='https://my.spline.design/untitled-242a0ebc2034a8d370c50748a6f072a7/'></iframe>
           <Container maxWidth="md" sx={{ pt: 5 }}>
             <LotteryContent lotteryContract={this.state.lotteryContract} enterLottery={this.enterLottery} getBalance={this.getBalance}/>
           </Container>

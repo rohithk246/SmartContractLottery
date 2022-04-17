@@ -31,7 +31,7 @@ const Navbar = ({accounts, onConnect}) => {
             edge="start"
             color="primary"
             aria-label="open drawer"
-            onClick={() => {alert("Please use metamask if you want to disconnect wallet!")}}
+            onClick={() => {alert("Wallet is connected. Please use metamask if you want to disconnect wallet!")}}
           >
             <AccountBalanceWalletIcon />
           </IconButton>

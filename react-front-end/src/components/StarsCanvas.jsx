@@ -74,7 +74,6 @@ const StarsCanvas = ({onConnect}) => {
       window.addEventListener("resize", () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        console.log(canvas.width)
         init();
       });
   
